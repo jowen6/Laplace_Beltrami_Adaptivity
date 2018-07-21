@@ -6,6 +6,36 @@
 //
 
 #include "Surface.hpp"
+template <int spacedim>
+class LiftBase :  public Function<spacedim>
+{
+public:
+    Lift () : Function<spacedim>(spacedim) {};
+    
+    virtual void vector_value (const Point<spacedim> &p,
+                               Vector<double>   &values) const;
+    
+    
+    virtual void vector_gradient(const Point<spacedim> &p, std::vector<Tensor<1,spacedim,double>> &gradients) const;
+    
+};
+/*
+ template <int surfdim, spacedim>
+ class SurfaceBase {
+ virtual void Set_geometry(triangulation);
+ Liftbase<spacedim> Lift();
+ 
+ };
+ 
+ template <int surfdim, int spacedim>
+ class Sphere : public SurfaceBase <spacedim> {
+ virtual void Set_geometry(triangulation);
+ Liftbase<spacedim> Lift();
+ 
+ };
+*/
+ 
+
 template<int surfdim, int spacedim>
 void Surface(int CASE, Triangulation<surfdim,spacedim> &triangulation)
 {
@@ -13,11 +43,23 @@ void Surface(int CASE, Triangulation<surfdim,spacedim> &triangulation)
 
         case 0: // SPHERE
         {
-            
+            /*
             static SphericalManifold<2,3> surface_description;
             GridGenerator::hyper_sphere(triangulation);
             triangulation.set_all_manifold_ids(0);
             triangulation.set_manifold (0, surface_description);
+            */
+            
+            static SphericalManifold<2,3> sphere_surface_description;
+            static FlatManifold<2,3> polyhedral_surface_description;
+            GridGenerator::hyper_sphere (triangulation);
+            triangulation.set_all_manifold_ids(0);
+            triangulation.set_manifold(0, sphere_surface_description);
+            
+            //triangulation.refine_global(5);
+            
+            triangulation.refine_global(2);
+            triangulation.set_manifold(0, polyhedral_surface_description);
             
             break;
         }

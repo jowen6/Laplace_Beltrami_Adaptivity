@@ -12,6 +12,24 @@
 
 
 using namespace dealii;
+//Set_Surface
+//  attach manifold to triangulation
+//  attach lift to triangulation
+//  
+template <int spacedim>
+class LiftBase :  public Function<spacedim>
+{
+public:
+    Lift () : Function<spacedim>(spacedim) {};
+    
+    virtual void vector_value (const Point<spacedim> &p,
+                               Vector<double>   &values) const;
+    
+    
+    virtual void vector_gradient(const Point<spacedim> &p, std::vector<Tensor<1,spacedim,double>> &gradients) const;
+    
+};
+
 
 template<int surfdim, int spacedim, class VECTOR>
 class Surface
@@ -20,23 +38,15 @@ public:
     Surface (Mapping_Q<surfdim,spacedim> &mapping,
                                Surface<surfdim,spacedim> &surface,
                                Triangulation<surfdim,spacedim> &triangulation,
-                               unsigned int fe_degree,
-                               double left_spectrum_bound,
-                               double right_spectrum_bound,
-                               double error_tolerance);
-    ~LaplaceBeltramiAdaptivity();
+                               unsigned int mapping_degree,
+
+    ~Surface();
     
-    void run();
     
     
     
 private:
-    void setup_system();
-    void assemble_system();
-    void solve();
-    void output_results();
-    void pde_adapt();
-    void geometry_adapt();
+    void lift();
     
     
     

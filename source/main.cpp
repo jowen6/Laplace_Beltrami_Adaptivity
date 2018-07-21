@@ -15,9 +15,16 @@ double error_tolerance;
 std::string left_spectrum_bound;
 std::string right_spectrum_bound;
 std::string surface_name;
+
+
 int main ( int argc, char **argv ){
+    
+    //Ask user to specify parameters
     std::cout << "Choose Manifold:";
     std::cin >> surface_case;
+    
+    std::cout << "Enter Error Tolerance:";
+    std:: cin >> error_tolerance;
     
     std::cout << "Enter Finite Element Degree:";
     std:: cin >> fe_degree;
@@ -30,7 +37,7 @@ int main ( int argc, char **argv ){
     
     std::cout << "Right Spectrum Bound";
     std::cin >> right_spectrum_bound;
-    
+
     //Initialize Triangulation
     Triangulation<surface_dimension, space_dimension> triangulation;
     
@@ -40,10 +47,19 @@ int main ( int argc, char **argv ){
     //Refine Surface
     triangulation.refine_global(init_refinement);
     
-    //Create Laplace Beltrami Function
-    //LB function should do all the writing to folders, it will need surface name, fe_degree, and spectrum bounds in the folder name
-    LaplaceBeltramiAdaptivity<surface_dimension, space_dimension, Vector<double>> laplace_beltrami_adapt(triangulation, fe_degree, left_spectrum_bound, right_spectrum_bound, error_tolerance);
+    //Beginning of output path
+    std::string output_folder = "output/Surface"+std::to_string(CASE);
     
+    //Create Laplace Beltrami Class
+    LaplaceBeltramiAdaptivity<surface_dimension, space_dimension, Vector<double>> laplace_beltrami_adapt(output_folder,
+                               triangulation,
+                               mapping,
+                               fe_degree,
+                               atoi(left_spectrum_bound.c_str()),
+                               atoi(right_spectrum_bound.c_str()),
+                               atoi(error_tolerance.c_str()));
+    
+    //Run Laplace Beltrami Code
     laplace_beltrami_adapt.run();
     
     //

@@ -24,6 +24,7 @@ class LaplaceBeltramiAdaptivity
     public:
     LaplaceBeltramiAdaptivity (const std::string output_path,
                                Triangulation<surfdim,spacedim> &triangulation,
+                               MappingQ<surfdim, spacedim> &mapping,
                                unsigned int fe_degree,
                                double left_spectrum_bound,
                                double right_spectrum_bound,
